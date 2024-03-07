@@ -1,0 +1,60 @@
+{% extends 'tienda/base.html' %}
+{% load static %}
+{% block title %}Servicios{% endblock %}
+{% block contenedor %}
+
+{% if data %}
+
+<a class="btn btn-success m-3" href="{% url 'tienda:servicios_formulario' %}" >Crear</a>
+
+<form class="d-flex" role="search" method="post" action="{% url 'tienda:servicios_buscar' %}">
+    {% csrf_token %}
+    <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" name="buscar"
+           value="{{ buscado }}">
+    <a class="btn" href="" type="button"><i class="bi bi-backspace-fill"></i></a>
+    <button class="btn btn-success" type="submit">Buscar</button>
+</form>
+
+<table class="table table-hover m-3">
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+    </tr>
+    {% for e in data %}
+    <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ e.nombre }}</td>
+        <td>{{ e.descripcion }}</td>
+        <td>
+            <a href="{% url 'tienda:servicios_editar' e.id %}" class="btn btn-info">Editar</a>
+            <a href="javascript:confirmar_eliminar('{{ e.id }}', '{% url 'tienda:servicios_eliminar' e.id %}');" class="btn btn-danger">Eliminar</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+    <script>
+       function confirmar_eliminar(id, url) {
+            if (confirm("¿Estás seguro de que deseas eliminar este pedido?")) {
+                window.location.href = url;
+            }
+      }
+    </script>
+</body>
+</html>
+
+{% else %}
+
+<div class="div_crear" style="box-shadow: 0 0 20px gray; display: flex; flex-direction: column; margin: 100px 500px; padding: 50px; text-align: center; border: 2px solid #dedede; width: 500px;">
+    <h2>¡Crea tu primer servicio</h2>
+    <h1 style="font-size: 150px; display: inline-block;">AQUÍ!</h1>
+    <a class="btn btn-success m-3" href="{% url 'tienda:servicios_formulario' %}" >Crear</a>
+</div>
+
+
+
+{% endif %}
+
+{% endblock %}
