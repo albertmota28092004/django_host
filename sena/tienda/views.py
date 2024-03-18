@@ -245,9 +245,8 @@ def productos_formulario(request):
     return render(request, "tienda/productos/pro-form.html", context)
 
 
-def upload_file(f):
-    hora_actual = str(datetime.datetime.now())
-    with open(f"uploads/fotos_productos/{hora_actual}{f}", "wb+") as destination:
+def upload_file(f, nuevo_nombre):
+    with open(f"uploads/fotos_productos/{nuevo_nombre}", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
@@ -260,8 +259,15 @@ def productos_guardar(request):
         fecha_compra = request.POST.get("fecha_compra")
         stock = request.POST.get("stock")
         foto = request.FILES.get("foto")
-        print(foto)
-        upload_file(foto)
+        if foto is not None:
+            hora_actual = str(datetime.datetime.now())
+            hora_nueva = str(hora_actual).replace("-", "").replace(" ", "_").replace(":", "").replace(".", "_")
+            nombre_foto = foto.name.rsplit('.', 1)
+            nuevo_nombre = f"{nombre_foto[0]}_{hora_nueva}.{nombre_foto[1]}"
+            upload_file(foto, nuevo_nombre)
+        else:
+            nuevo_nombre = "default.png"
+
         categoria = Categoria.objects.get(pk=request.POST.get("categoria"))
 
         if id == "":
@@ -272,7 +278,7 @@ def productos_guardar(request):
                     precio=precio,
                     fecha_compra=fecha_compra,
                     stock=stock,
-                    foto=foto,
+                    foto=f"fotos_productos/{nuevo_nombre}",
                     categoria=categoria,
                 )
                 pro.save()
@@ -305,9 +311,18 @@ def productos_eliminar(request, id):
     try:
         q = Producto.objects.get(pk=id)
         q.delete()
-        messages.success(request, "Eliminado correctamente!!")
+        from django.conf import settings
+        from django.conf.urls.static import static
+        print(f"======{settings.MEDIA_ROOT}/{q.foto}")
+        if os.path.exists(f"{settings.MEDIA_ROOT}/{q.foto}"):
+
+            if q.foto.url != "fotos_productos/default.png":
+                os.remove(f"{settings.MEDIA_ROOT}/{q.foto}")
+        else:
+            messages.warning(request, "No existe la foto....")
+        messages.success(request, "Registro eliminado correctamente!!")
     except Exception as e:
-        messages.error(request, f"Error. {e}")
+            messages.error(request, f"Error. {e}")
     return HttpResponseRedirect(reverse("tienda:productos", args=()))
 
 
