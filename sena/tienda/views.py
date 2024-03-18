@@ -11,6 +11,7 @@ from datetime import datetime
 from django.template import loader
 from django.template.loader import render_to_string
 import os
+import datetime
 from django.core.files.storage import default_storage
 
 
@@ -244,6 +245,13 @@ def productos_formulario(request):
     return render(request, "tienda/productos/pro-form.html", context)
 
 
+def upload_file(f):
+    hora_actual = str(datetime.datetime.now())
+    with open(f"uploads/fotos_productos/{hora_actual}{f}", "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def productos_guardar(request):
     if request.method == "POST":
         id = request.POST.get("id")
@@ -251,11 +259,10 @@ def productos_guardar(request):
         precio = request.POST.get("precio")
         fecha_compra = request.POST.get("fecha_compra")
         stock = request.POST.get("stock")
-        foto = request.POST.get("foto")
+        foto = request.FILES.get("foto")
+        print(foto)
+        upload_file(foto)
         categoria = Categoria.objects.get(pk=request.POST.get("categoria"))
-
-        # Modificar la ruta de la foto
-        foto = os.path.join('fotos_productos', foto).replace('\\', '/')
 
         if id == "":
             # crear
