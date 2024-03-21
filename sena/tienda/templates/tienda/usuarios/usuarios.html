@@ -23,6 +23,7 @@
         <th>Nickname</th>
         <th>Password</th>
         <th>Rol</th>
+        <th>Foto</th>
         <th>Acciones</th>
     </tr>
     {% for u in data %}
@@ -33,6 +34,11 @@
         <td>{{ u.nick }}</td>
         <td>{{ u.password }}</td>
         <td>{{ u.rol }}</td>
+        <td class="portfolio-item image-zoom">
+            <a href="{{ u.foto.url }}" data-fancybox="gallery">
+                <img class="img-fluid img-portfolio" alt="Panning picture #1" src="{{ u.foto.url }}" width="100px">
+            </a>
+        </td>
         <td>
             <a href="{% url 'tienda:usuarios_editar' u.id %}" class="btn btn-info">Editar</a>
             <a href="javascript:confirmar_eliminar('{{ u.id }}', '{% url 'tienda:usuarios_eliminar' u.id %}');" class="btn btn-danger">Eliminar</a>

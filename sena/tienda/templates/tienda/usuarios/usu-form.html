@@ -43,7 +43,7 @@
 {% endif %}
 
 <div class="formulario_contenedor">
-    <form method="post" action="{% url 'tienda:usuarios_guardar' %}">
+    <form method="post" action="{% url 'tienda:usuarios_guardar' %}" enctype="multipart/form-data">
     {% csrf_token %}
         <div class="mb-3" hidden>
             <label class="form-label">ID del Usuario:</label>
@@ -64,6 +64,10 @@
         <div class="mb-3">
             <label class="form-label">Contraseña del Usuario:</label>
             <input type="text" class="form-control" placeholder="Password" name="password" value="{{ data.password }}" required>
+        </div>
+        <div class="mb-3">
+                <label class="form-label">Foto del Producto:</label>
+                <input type="file" class="form-control" placeholder="Foto" name="foto_usuario" value="{{ data.foto }}" accept="image/*">
         </div>
         <div class="mb-3">
             <label class="form-label">Rol del Usuario:</label>

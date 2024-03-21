@@ -245,7 +245,7 @@ def productos_formulario(request):
     return render(request, "tienda/productos/pro-form.html", context)
 
 
-def upload_file(f, nuevo_nombre):
+def productos_guardar_imagen(f, nuevo_nombre):
     with open(f"uploads/fotos_productos/{nuevo_nombre}", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
@@ -258,13 +258,13 @@ def productos_guardar(request):
         precio = request.POST.get("precio")
         fecha_compra = request.POST.get("fecha_compra")
         stock = request.POST.get("stock")
-        foto = request.FILES.get("foto")
+        foto = request.FILES.get("foto_producto")
         if foto is not None:
             hora_actual = str(datetime.datetime.now())
             hora_nueva = str(hora_actual).replace("-", "").replace(" ", "_").replace(":", "").replace(".", "_")
             nombre_foto = foto.name.rsplit('.', 1)
             nuevo_nombre = f"{nombre_foto[0]}_{hora_nueva}.{nombre_foto[1]}"
-            upload_file(foto, nuevo_nombre)
+            productos_guardar_imagen(foto, nuevo_nombre)
         else:
             nuevo_nombre = "default.png"
 
@@ -322,7 +322,7 @@ def productos_eliminar(request, id):
             messages.warning(request, "No existe la foto....")
         messages.success(request, "Registro eliminado correctamente!!")
     except Exception as e:
-            messages.error(request, f"Error. {e}")
+        messages.error(request, f"Error. {e}")
     return HttpResponseRedirect(reverse("tienda:productos", args=()))
 
 
@@ -507,6 +507,12 @@ def usuarios_formulario(request):
     return render(request, "tienda/usuarios/usu-form.html")
 
 
+def usuarios_guardar_imagen(f, nuevo_nombre):
+    with open(f"uploads/fotos/{nuevo_nombre}", "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def usuarios_guardar(request):
     if request.method == "POST":
         id = request.POST.get("id")
@@ -515,7 +521,15 @@ def usuarios_guardar(request):
         nick = request.POST.get("nick")
         password = request.POST.get("password")
         rol = request.POST.get("rol")
-
+        foto = request.FILES.get("foto_usuario")
+        if foto is not None:
+            hora_actual = str(datetime.datetime.now())
+            hora_nueva = str(hora_actual).replace("-", "").replace(" ", "_").replace(":", "").replace(".", "_")
+            nombre_foto = foto.name.rsplit('.', 1)
+            nuevo_nombre = f"{nombre_foto[0]}_{hora_nueva}.{nombre_foto[1]}"
+            usuarios_guardar_imagen(foto, nuevo_nombre)
+        else:
+            nuevo_nombre = "default.png"
         if id == "":
             # crear
             try:
@@ -524,7 +538,8 @@ def usuarios_guardar(request):
                     apellido=apellido,
                     nick=nick,
                     password=password,
-                    rol=rol
+                    rol=rol,
+                    foto=f"fotos/{nuevo_nombre}",
                 )
                 pro.save()
                 messages.success(request, "Guardado correctamente!!")
@@ -539,6 +554,7 @@ def usuarios_guardar(request):
                 q.nick = nick
                 q.password = password
                 q.rol = rol
+                q.foto = foto
                 q.save()
                 messages.success(request, "Actualizado correctamente!!")
             except Exception as e:
