@@ -20,6 +20,7 @@
     <tr>
         <th>ID</th>
         <th>Nombre</th>
+        <th>Descripción</th>
         <th class="text-end">Precio</th>
         <th>Fecha Compra</th>
         <th>Stock</th>
@@ -31,6 +32,12 @@
     <tr>
         <td>{{ i.id }}</td>
         <td>{{ i.nombre }}</td>
+        <td>
+            <div style="overflow-y: scroll; width: 300px !important;">
+                {{ i.descripcion }}
+            </div>
+
+        </td>
         <td class="text-end">${{ i.precio|intcomma }}</td>
         <td>{{ i.fecha_compra }}</td>
         <td>{{ i.stock }}</td>

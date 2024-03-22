@@ -255,6 +255,7 @@ def productos_guardar(request):
     if request.method == "POST":
         id = request.POST.get("id")
         nombre = request.POST.get("nombre")
+        descripcion = request.POST.get("descripcion")
         precio = request.POST.get("precio")
         fecha_compra = request.POST.get("fecha_compra")
         stock = request.POST.get("stock")
@@ -275,6 +276,7 @@ def productos_guardar(request):
             try:
                 pro = Producto(
                     nombre=nombre,
+                    descripcion=descripcion,
                     precio=precio,
                     fecha_compra=fecha_compra,
                     stock=stock,
@@ -290,6 +292,7 @@ def productos_guardar(request):
             try:
                 q = Producto.objects.get(pk=id)
                 q.nombre = nombre
+                q.descripcion = descripcion
                 q.precio = precio
                 q.fecha_compra = fecha_compra
                 q.stock = stock

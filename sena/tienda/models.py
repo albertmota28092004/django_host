@@ -13,6 +13,7 @@ class Categoria(models.Model):
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=254)
+    descripcion = models.TextField(null=True, blank=True, default="El producto no tiene descripción")
     precio = models.IntegerField()
     fecha_compra = models.DateField()
     stock = models.IntegerField(default=1)
@@ -42,7 +43,7 @@ class Usuario(models.Model):
     apellido = models.CharField(max_length=254)
     nick = models.CharField(max_length=254)
     password = models.CharField(max_length=254)
-    email = models.EmailField(max_length=254, unique=True)
+    email = models.EmailField(max_length=254)
     rol = models.IntegerField(choices=ROLES, default=3)
 
     def __str__(self):

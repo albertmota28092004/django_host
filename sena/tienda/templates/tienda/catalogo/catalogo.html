@@ -6,66 +6,255 @@
 
 {% block contenedor %}
 
-    <div class="container text-center">
-        <div class="row align-items-start">
-            <div class="col col-3">
-                <div class="list-group categorias_catalogo" style="width: 180px; margin-left: -70px; margin-top: 80px">
-                    <a href="{% url 'tienda:catalogo' 'no' %}?id=0" class="list-group-item list-group-item-action list-group-item-warning active" aria-current="true">
-                        Todos
-                    </a>
-                    {% for c in categorias %}
-                        <a href="{% url 'tienda:catalogo' 'no' %}?id={{ c.id }}" class="list-group-item list-group-item-action list-group-item-warning {% if request.session.submenu == 0 %}active{% endif %} ">{{ c.nombre }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col col-9">
-                <div class="card contenedor_productos_catalogo" style="width: 1092px !important; margin-left: -200px;">
-                    <h5 class="card-header">Catálogo</h5>
-                    <div class="card-body">
-                        {% for p in productos %}
-                            {% if forloop.first %}
-                                <div class="row">
-                            {% endif %}
-                                <div class="card" style="width: 18rem; float:left;">
-                                    <img src="{{ p.foto.url }}" class="card-img-top" alt="..." >
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ p.nombre }} (${{ p.precio }})</h5>
-                                        <p class="card-text text-sm text-muted">
-                                            <figcaption class="blockquote-footer mt-1">
-                                                <cite>Categoría: {{ p.categoria.nombre }}</cite>
-                                            </figcaption>
+<style>
+
+    .plus,
+    .minus {
+      border: 0 solid transparent;
+      background-color: transparent;
+    }
+
+    .quantity-box {
+      display: flex;
+    }
+
+    .number-box {
+      border: 1px solid black;
+      width: 70px;
+      height: 30px;
+      text-align: center;
+      margin: 0 10px;
+    }
+
+
+    .formulario_agregar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button-purchase {
+      background: linear-gradient(90deg,
+          #D17C1F 0%,
+          #ffb842 54%,
+          #E6B14C 82%);
+      border: 5px ridge #021429;
+      width: 100px;
+      transition: all 0.2s;
+      border-radius: 50px;
+      margin-top: 130px;
+    }
+
+    .button-purchase:hover {
+      background-color: rgba(85, 144, 189, 1);
+      transform: translateY(2px);
+      box-shadow: 0 0 5px #D17C1F;
+    }
+
+    .button-purchase:active {
+      background-color: rgba(85, 144, 189, 0.8);
+      transform: translateY(4px);
+      box-shadow: 0 0 2px #D17C1F;
+    }
+
+
+    .contenedor_productos_catalogo {
+        width: 1092px !important;
+        background-color: transparent;
+        border: 0 solid transparent;
+    }
+
+    .categorias_catalogo {
+        width: 180px;
+        margin-left: 70px;
+        margin-top: 80px;
+        text-align: center;
+    }
+
+    .filtros:focus , #filtros:focus{
+        color: #000000;
+    }
+
+    .product-block-back {
+            overflow: scroll;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        .product-block,
+        .product-block-back {
+            border-radius: 10px;
+            padding: 10px;
+            background-color: white;
+            box-shadow: 0 3px 15px rgba(100, 100, 100, 0.5);
+        }
+
+        .img-container {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .product-block p {
+            margin: 5px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .card-container {
+            transform: rotateY(180deg);
+        }
+
+        .product-block,
+        .product-block-back {
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+
+        .product-block-back {
+            transform: rotateY(180deg);
+            position: absolute;
+            top: 0%;
+        }
+
+        .stat-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            text-align: left;
+        }
+
+        .button-purchase {
+            background: linear-gradient(90deg,
+                    #D17C1F 0%,
+                    #ffb842 54%,
+                    #E6B14C 82%);
+            border: 5px ridge #021429;
+            width: 100px;
+            transition: all 0.2s;
+            border-radius: 50px;
+        }
+
+        .button-purchase:hover {
+            background-color: rgba(85, 144, 189, 1);
+            transform: translateY(2px);
+            box-shadow: 0 0 5px #D17C1F;
+        }
+
+        .button-purchase:active {
+            background-color: rgba(85, 144, 189, 0.8);
+            transform: translateY(4px);
+            box-shadow: 0 0 2px #D17C1F;
+        }
+
+</style>
+
+<body style="background-color: #8f82b7;">
+<div class="container text-center">
+    <h3 style="text-align: center;margin-top: 30px;color: white;">Catálogo de Productos</h3>
+    <div class="row align-items-start">
+        <div class="col col-9">
+            <div class="card contenedor_productos_catalogo" style="">
+                <div class="card-body">
+                    {% for p in productos %}
+                    {% if forloop.first %}
+                    <div class="product-container">
+                        {% endif %}
+                        <div class="flip-card">
+                            <div class="card-container" style="width: 18rem; float:left;">
+                                <div class="product-block">
+                                    <div class="img-container">
+                                        <img src="{{ p.foto.url }}" width="200px" height="200px">
+                                    </div>
+                                    <p style="font-weight: bold;">
+                                        {{ p.nombre }}
+                                    </p>
+                                    <p>
+                                        ${{ p.precio }}
+                                    </p>
+                                </div>
+                                <div class="product-block-back">
+                                    <div class="productos_detras">
+                                        <p>
+                                            {{ p.descripcion }}
                                         </p>
                                         {% if p.stock <= 0 %}
-                                            <strong class="text-danger">Agotado</strong>
+                                        <strong class="text-danger">Agotado</strong>
                                         {% else %}
-                                            <form action="{% url 'tienda:carrito_agregar' %}" method="post">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="id" value="{{ p.id }}">
-                                                <input type="number" min="1" max="{{ p.stock }}" value="1" size="3" style="text-align: center;" name="cantidad">
-                                                <button type="submit" class="btn btn-primary">Add Carrito</button>
-                                            </form>
+                                        <form action="{% url 'tienda:carrito_agregar' %}" method="post" class="formulario_agregar">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{ p.id }}">
+                                            <div>
+                                                <button class="minus" onclick="disminuir()">-</button>
+                                                <input class="number-box" type="number" min="1" max="{{ p.stock }}" value="1" size="3"
+                                                   style="text-align: center;" name="cantidad" readonly>
+                                                <button class="plus" onclick="aumentar()">+</button>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary button-purchase">Agregar</button>
+                                        </form>
                                         {% endif %}
                                     </div>
                                 </div>
-
-                            {% if forloop.counter|divisibleby:3 %}
-                                </div>
-                                <div class="row">
-                            {% endif %}
-
-                            {% if forloop.last %}
-                                </div>
-                            {% endif %}
-
-
-                        {% endfor %}
-
-
-
+                            </div>
+                        </div>
+                        {%  if forloop.counter|divisibleby:3 %}
                     </div>
+                    <div class="product-container">
+                        {% endif %}
+                        {% if forloop.last %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
+        <div class="col col-3">
+            <div class="list-group categorias_catalogo">
+                <a href="{% url 'tienda:catalogo' 'no' %}?id=0"
+                   class="filtros list-group-item list-group-item-action list-group-item-warning active"
+                   aria-current="true"
+                   style="background-color: transparent; border: 0 solid transparent; color: #FFFFFF;">
+                    Todos
+                </a>
+                {% for c in categorias %}
+                <a href="{% url 'tienda:catalogo' 'no' %}?id={{ c.id }}"
+                   class="filtros list-group-item list-group-item-action list-group-item-warning {% if request.session.submenu == 0 %}active{% endif %} "
+                   style="background-color: transparent; border: 0 solid transparent; color: #FFFFFF;">{{ c.nombre}}</a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+</div>
 
+<script>
+    function aumentar() {
+        number = document.getElementById("number-box");
+        number.value++;
+    }
+
+    function disminuir() {
+        number = document.getElementById("number-box");
+
+        if (number.value > 1) {
+          number.value--;
+        }
+    }
+</script>
+</body>
 {% endblock %}

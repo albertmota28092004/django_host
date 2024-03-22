@@ -180,3 +180,17 @@ main {
     font-family: Arial, sans-serif;
     font-size: 16px;
 }
+
+
+/* Catálogo */
+
+.categorias_catalogo {
+    width: 180px;
+    margin-left: -70px;
+    margin-top: 80px
+
+}
+
+.filtros {
+    background-color: #FFFFFF !important;
+}

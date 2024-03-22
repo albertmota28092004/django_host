@@ -12,8 +12,8 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 
 class ProductoAdmin(admin.ModelAdmin):
-    fields = ["nombre", "precio", "fecha_compra", "stock", "foto", "categoria"]
-    list_display = ["id", "nombre", "precio", "fecha_compra", "stock", "foto", "foto_producto", "categoria"]
+    fields = ["nombre", "descripcion", "precio", "fecha_compra", "stock", "foto", "categoria"]
+    list_display = ["id", "nombre", "descripcion", "precio", "fecha_compra", "stock", "foto", "foto_producto", "categoria"]
     search_fields = ["nombre"]
     list_filter = ["fecha_compra"]
 
