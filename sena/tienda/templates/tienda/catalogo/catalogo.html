@@ -1,6 +1,7 @@
 {% extends 'tienda/base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %} Catálogo {% endblock %}
 
@@ -34,31 +35,6 @@
         align-items: center;
     }
 
-    .button-purchase {
-      background: linear-gradient(90deg,
-          #D17C1F 0%,
-          #ffb842 54%,
-          #E6B14C 82%);
-      border: 5px ridge #021429;
-      width: 100px;
-      transition: all 0.2s;
-      border-radius: 50px;
-      margin-top: 130px;
-    }
-
-    .button-purchase:hover {
-      background-color: rgba(85, 144, 189, 1);
-      transform: translateY(2px);
-      box-shadow: 0 0 5px #D17C1F;
-    }
-
-    .button-purchase:active {
-      background-color: rgba(85, 144, 189, 0.8);
-      transform: translateY(4px);
-      box-shadow: 0 0 2px #D17C1F;
-    }
-
-
     .contenedor_productos_catalogo {
         width: 1092px !important;
         background-color: transparent;
@@ -66,10 +42,10 @@
     }
 
     .categorias_catalogo {
-        width: 180px;
-        margin-left: 70px;
+        width: 130px;
+        margin-left: 100px;
         margin-top: 80px;
-        text-align: center;
+        text-align: left;
     }
 
     .filtros:focus , #filtros:focus{
@@ -140,7 +116,7 @@
             text-align: left;
         }
 
-        .button-purchase {
+        .button-agregar {
             background: linear-gradient(90deg,
                     #D17C1F 0%,
                     #ffb842 54%,
@@ -149,15 +125,18 @@
             width: 100px;
             transition: all 0.2s;
             border-radius: 50px;
+            color: black;
+            font-weight: bold;
+            margin-top: 100px;
         }
 
-        .button-purchase:hover {
+        .button-agregar:hover {
             background-color: rgba(85, 144, 189, 1);
             transform: translateY(2px);
             box-shadow: 0 0 5px #D17C1F;
         }
 
-        .button-purchase:active {
+        .button-agregar:active {
             background-color: rgba(85, 144, 189, 0.8);
             transform: translateY(4px);
             box-shadow: 0 0 2px #D17C1F;
@@ -186,7 +165,7 @@
                                         {{ p.nombre }}
                                     </p>
                                     <p>
-                                        ${{ p.precio }}
+                                        ${{ p.precio|intcomma }}
                                     </p>
                                 </div>
                                 <div class="product-block-back">
@@ -201,12 +180,12 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="id" value="{{ p.id }}">
                                             <div>
-                                                <button class="minus" onclick="disminuir()">-</button>
+                                                <!--<button class="minus" onclick="disminuir()">-</button>-->
                                                 <input class="number-box" type="number" min="1" max="{{ p.stock }}" value="1" size="3"
-                                                   style="text-align: center;" name="cantidad" readonly>
-                                                <button class="plus" onclick="aumentar()">+</button>
+                                                   style="text-align: center;" name="cantidad">
+                                                <!--<button class="plus" onclick="aumentar()">+</button>-->
                                             </div>
-                                            <button type="submit" class="btn btn-primary button-purchase">Agregar</button>
+                                            <button type="submit" class="btn btn-primary button-agregar">Agregar</button>
                                         </form>
                                         {% endif %}
                                     </div>
@@ -226,16 +205,21 @@
         </div>
         <div class="col col-3">
             <div class="list-group categorias_catalogo">
+                <a href="#"
+                   class="filtros list-group-item list-group-item-action list-group-item-warning active"
+                   style="border: 0 solid transparent; color: #000000; text-align: left !important">
+                    Filtrar por:
+                </a>
                 <a href="{% url 'tienda:catalogo' 'no' %}?id=0"
                    class="filtros list-group-item list-group-item-action list-group-item-warning active"
                    aria-current="true"
-                   style="background-color: transparent; border: 0 solid transparent; color: #FFFFFF;">
+                   style="border: 0 solid transparent; color: #000000; font-weight: bold;">
                     Todos
                 </a>
                 {% for c in categorias %}
                 <a href="{% url 'tienda:catalogo' 'no' %}?id={{ c.id }}"
                    class="filtros list-group-item list-group-item-action list-group-item-warning {% if request.session.submenu == 0 %}active{% endif %} "
-                   style="background-color: transparent; border: 0 solid transparent; color: #FFFFFF;">{{ c.nombre}}</a>
+                   style="border: 0 solid transparent; color: #000000;font-weight: bold;">{{ c.nombre}}</a>
                 {% endfor %}
             </div>
         </div>
@@ -246,6 +230,7 @@
     function aumentar() {
         number = document.getElementById("number-box");
         number.value++;
+        event.preventDefault();
     }
 
     function disminuir() {
@@ -253,6 +238,7 @@
 
         if (number.value > 1) {
           number.value--;
+          event.preventDefault();
         }
     }
 </script>

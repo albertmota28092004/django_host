@@ -1,41 +1,4 @@
-function validarUsuario() {
-    let u = document.getElementById("usuario").value;
-    let c = document.getElementById("contraseña").value;
-    if (u == "admin") {
-        if (c == "admin12345") {
-            window.open("../html/inicioAdmin.html")
-        }
-        else {
-            alert("Contraseña incorrecta. Ingrésala nuevamente.");
-            event.preventDefault();
-        }
-    }
-    else if (u == "empleado") {
-        if (c == "empleado12345") {
-            window.open("../html/inicioEmpleado.html")
-        }
-        else {
-            alert("Contraseña incorrecta. Ingrésala nuevamente.");
-            event.preventDefault();
-        }
-    }
-    else {
-        alert("Por favor, ingresa un dato válido.");
-        event.preventDefault();
-    }
-}
 
-function registrarUsuario() {
-    let c = document.getElementById("contraseña_registro").value;
-    let cc = document.getElementById("confirmar_contraseña_registro").value;
-    if (c == cc) {
-        window.open()
-    }
-    else {
-        alert("Las contraseñas no coinciden");
-        event.preventDefault();
-    }
-}
 
 function customAlert() {
     var overlay = document.createElement('div');
