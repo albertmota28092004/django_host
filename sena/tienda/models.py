@@ -70,6 +70,7 @@ class Cita(models.Model):
     def __str__(self):
         return f'{self.cliente} - {self.servicio}'
 
+
 class Venta(models.Model):
     fecha_venta = models.DateTimeField(auto_now=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING)
@@ -83,6 +84,7 @@ class Venta(models.Model):
     def __str__(self):
         return f'{self.id}'
 
+
 class DetalleVenta(models.Model):
     venta = models.ForeignKey(Venta, on_delete=models.DO_NOTHING)
     producto = models.ForeignKey(Producto, on_delete=models.DO_NOTHING)
@@ -91,4 +93,3 @@ class DetalleVenta(models.Model):
 
     def __str__(self):
         return f'{self.id} -{self.venta}'
-

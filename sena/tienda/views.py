@@ -976,4 +976,50 @@ def pruebas(request):
     print(f"Ventas: {venta}")
     return HttpResponse("Prueba hecha")
 
+
 # mensaje = render_to_string('tienda/mensaje.html', {'data': zip(ventas, subtotal_por_venta)})
+
+def reportes(request):
+    contexto = {}
+    if request.method == "POST":
+        fecha_ini = request.POST.get("f_ini") + " 00:00:00"
+        fecha_fin = request.POST.get("f_fin") + " 23:59:59"
+
+        try:
+            q1 = Venta.objects.raw(f"""
+			select id, count(*) as cantidad from tienda_venta 
+			WHERE fecha_venta BETWEEN "{fecha_ini}" and "{fecha_fin}";
+			""")
+
+            q2 = Venta.objects.raw(f"""
+			select tv.*, td.*, tp.nombre  from tienda_venta tv 
+			inner join tienda_detalleventa td on tv.id = td.venta_id 
+			inner join tienda_producto tp on td.producto_id = tp.id
+			WHERE tv.fecha_venta BETWEEN "{fecha_ini}" and "{fecha_fin}"; 
+			""")
+
+            q3 = Venta.objects.raw(f"""
+            			select tv.id , sum(td.cantidad * td.precio_historico) as total, tu.nombre  from tienda_venta tv 
+            			inner join tienda_detalleventa td on tv.id = td.venta_id
+            			inner join tienda_usuario tu on tv.usuario_id = tu.id 
+            			WHERE tv.fecha_venta BETWEEN "{fecha_ini}" and "{fecha_fin}" GROUP by tv.id ;
+            			""")
+            g_labels = []
+            g_data = []
+            g_usuario = []
+            for i in q3:
+                g_labels.append(i.id)
+                g_data.append(i.total)
+                g_usuario.append(i.nombre)
+
+            contexto = {"cantidad": q1[0].cantidad, "datos": q2, "f_ini": request.POST.get("f_ini"),
+                        "f_fin": request.POST.get("f_fin"), "grafico": q3, "g_labels": g_labels, "g_data": g_data,
+                        "g_usuario": g_usuario}
+
+            messages.success(request, "Consulta correcta con datos...!")
+        except Venta.DoesNotExist:
+            messages.info(request, "No hay datos...")
+        except Exception as e:
+            messages.error(request, f"Error, {e}")
+
+    return render(request, "tienda/reportes/reportes.html", contexto)

@@ -89,6 +89,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="{% url 'tienda:usuarios' %}">Usuarios</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{% url 'tienda:reportes' %}">Reportes</a>
+                            </li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="{% url 'tienda:citas_formulario' %}">Agendar cita</a>
@@ -207,8 +210,12 @@
       <script>
         AOS.init();
       </script>
-<script src="{% static 'tienda/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'tienda/js/script.js' %}"></script>
+    <script src="{% static 'tienda/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'tienda/js/script.js' %}"></script>
+    {% block js_especial %}
+
+    {% endblock %}
+
 
 </body>
 </html>

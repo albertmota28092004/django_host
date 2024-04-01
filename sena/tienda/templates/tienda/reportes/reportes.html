@@ -1,0 +1,36 @@
+{% extends 'tienda/base.html' %}
+{% load static %}
+{% block title %}Reportes{% endblock %}
+{% block contenedor %}
+
+    <h1>Reporte ventas</h1>
+    <form action="{% url 'tienda:reportes' %}" method="post">
+        {% csrf_token %}
+        <input placeholder="Fecha inicio" type="date" name="f_ini" class="form-control" style="width:200px;" value="{{ f_ini }}"><br>
+        <input placeholder="Fecha final" type="date" name="f_fin" class="form-control" style="width:200px;" value="{{ f_fin }}"><br>
+        <button type="submit" class="btn btn-secondary">Consultar</button>
+    </form>
+    <hr />
+    <div>
+        Resultados:
+        <br>
+        {{ cantidad }}<br>
+        {% for r in grafico %}
+            ID: {{ r.id }} - Usuario: {{ r.nombre }} - {{ r.total }} - <br>
+        {% endfor %}
+    </div>
+
+    <div class="col-3">
+        <canvas id="myChart"></canvas>
+    </div>
+    <br><br>
+    <br><br>
+
+
+{% endblock %}
+
+{% block js_especial %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>mostrar_grafico1({{g_labels}}, {{g_data}});</script>
+{% endblock %}
+

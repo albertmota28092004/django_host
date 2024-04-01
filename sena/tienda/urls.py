@@ -67,4 +67,6 @@ urlpatterns = [
     path("nueva_contrasena/", views.nueva_contrasena, name="nueva_contrasena"),
     path("actualizar_contrasenas/", views.actualizar_contrasenas, name="actualizar_contrasenas"),
 
+    path("reportes/", views.reportes, name="reportes"),
+
 ]

@@ -284,4 +284,27 @@ function actualizar_carrito(url_django, id, cantidad){
     });
 }
 
+function mostrar_grafico1(g_labels, g_data){
 
+    console.log( "ready!" );
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: g_labels,
+        datasets: [{
+          label: '$ total Venta',
+          data: g_data,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+}
